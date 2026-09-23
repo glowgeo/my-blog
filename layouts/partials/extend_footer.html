@@ -1,0 +1,68 @@
+{{- /*
+  这是 PaperMod 的扩展点，内容会插入到每个页面的 </body> 之前。
+  这个文件做两件事：
+
+    1. 首页加载 Netlify Identity 组件
+       —— 后台 /admin/ 的邀请邮件登录流程需要它
+    2. 文章页加载图片灯箱
+       —— 点击正文里的图片可以全屏查看，配套样式在
+          assets/css/extended/custom.css
+*/ -}}
+
+{{- if .IsHome }}
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", (user) => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
+</script>
+{{- end }}
+
+{{- if .IsPage }}
+<script>
+  (function () {
+    var overlay = null;
+
+    function closeLightbox() {
+      if (!overlay) return;
+      overlay.remove();
+      overlay = null;
+      document.body.style.overflow = "";
+    }
+
+    function openLightbox(src, alt) {
+      overlay = document.createElement("div");
+      overlay.className = "img-lightbox";
+
+      var img = document.createElement("img");
+      img.src = src;
+      img.alt = alt || "";
+      overlay.appendChild(img);
+
+      overlay.addEventListener("click", closeLightbox);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = "hidden";
+    }
+
+    // 按 Esc 关闭
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeLightbox();
+    });
+
+    // 点击正文里的图片 → 打开灯箱
+    document.addEventListener("click", function (e) {
+      var el = e.target;
+      if (!el || el.tagName !== "IMG") return;
+      if (!el.closest(".post-content")) return;
+      e.preventDefault();
+      openLightbox(el.currentSrc || el.src, el.alt);
+    });
+  })();
+</script>
+{{- end }}

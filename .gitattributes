@@ -1,0 +1,15 @@
+# 统一换行符，避免 Windows 上编辑后产生大量无意义的 diff，
+# 同时保证 Netlify 在 Linux 上构建时拿到的是 LF。
+* text=auto eol=lf
+
+# 二进制文件不要做换行转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary

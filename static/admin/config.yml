@@ -1,0 +1,112 @@
+# ============================================================
+#  Decap CMS 后台配置
+#  文件位置必须是 /admin/config.yml
+#  改完这个文件后需要重新部署才生效
+# ============================================================
+
+# ------------------------------------------------------------
+#  登录方式
+#  使用 Netlify Identity + Git Gateway
+#  （这是 Decap 官方文档推荐的 Netlify 接法）
+# ------------------------------------------------------------
+backend:
+  name: git-gateway
+  branch: main
+
+# 本地开发时想不起后端直接编辑文件，可以取消下面这行的注释，
+# 然后用 npx decap-server 启动本地代理
+# local_backend: true
+
+# ------------------------------------------------------------
+#  图片上传位置
+#  media_folder  = 文件实际存到仓库的哪里
+#  public_folder = 网页里引用时的路径
+# ------------------------------------------------------------
+media_folder: "static/images/uploads"
+public_folder: "/images/uploads"
+
+# 后台界面语言
+locale: "zh_Hans"
+
+# ------------------------------------------------------------
+#  内容集合
+# ------------------------------------------------------------
+collections:
+  # ========================= 文章 =========================
+  - name: "posts"
+    label: "文章"
+    label_singular: "文章"
+    folder: "content/posts"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: ["date", "title"]
+    summary: "{{title}}  ·  {{date | date('YYYY-MM-DD')}}"
+    fields:
+      - label: "标题"
+        name: "title"
+        widget: "string"
+        hint: "会显示在页面顶部，也会用来生成网址"
+
+      - label: "发布日期"
+        name: "date"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: "HH:mm"
+        format: "YYYY-MM-DDTHH:mm:ssZ"
+        picker_utc: false
+        hint: "决定文章排序，时间越新越靠前"
+
+      - label: "草稿"
+        name: "draft"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "打开后文章不会发布到线上"
+
+      - label: "摘要"
+        name: "summary"
+        widget: "text"
+        required: false
+        hint: "显示在首页列表里的简介，留空则自动截取正文开头"
+
+      - label: "标签"
+        name: "tags"
+        widget: "list"
+        required: false
+        default: []
+        hint: "例如：教程、随笔。会自动生成标签归档页"
+
+      - label: "分类"
+        name: "categories"
+        widget: "list"
+        required: false
+        default: []
+
+      - label: "封面图"
+        name: "cover"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "图片", name: "image", widget: "image", required: false }
+          - { label: "说明文字", name: "alt", widget: "string", required: false }
+          - { label: "图片标题", name: "caption", widget: "string", required: false }
+
+      - label: "正文"
+        name: "body"
+        widget: "markdown"
+
+  # ========================= 独立页面 =========================
+  - name: "pages"
+    label: "独立页面"
+    files:
+      - label: "关于"
+        name: "about"
+        file: "content/about.md"
+        fields:
+          - { label: "标题", name: "title", widget: "string", default: "关于" }
+          - { label: "摘要", name: "summary", widget: "text", required: false }
+          - label: "正文"
+            name: "body"
+            widget: "markdown"

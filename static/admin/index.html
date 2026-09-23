@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>内容管理</title>
+
+    <!--
+      Netlify Identity 组件。
+      用于处理「邀请邮件 → 设置密码 → 跳回后台」这个流程。
+    -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  </head>
+  <body>
+    <!--
+      Decap CMS 主体。
+      decap-cms.js 已下载到本目录，不依赖任何外部 CDN，
+      所以即使 unpkg / jsdelivr 在国内访问不了，后台也能正常打开。
+    -->
+    <script src="./decap-cms.js"></script>
+  </body>
+</html>

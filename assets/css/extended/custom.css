@@ -1,0 +1,162 @@
+/* ============================================================
+   中文阅读体验优化
+   ------------------------------------------------------------
+   PaperMod 会自动加载 assets/css/extended/ 下的所有 CSS 文件，
+   所以这个文件不需要在任何地方"注册"，放进来就生效。
+   想撤销某项调整，把对应那段注释掉或删掉即可。
+   ============================================================ */
+
+/* ---------- 1. 字体 ---------- */
+:root {
+  /* 中文字体栈：从系统自带的高质量中文字体里按优先级挑 */
+  --font-cn: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei",
+    "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif;
+
+  --font-code: "Cascadia Code", "JetBrains Mono", "SF Mono", Menlo, Consolas,
+    "Liberation Mono", "Microsoft YaHei", monospace;
+}
+
+body {
+  font-family: var(--font-cn);
+  line-height: 1.75; /* 中文比英文需要更大的行高才不挤 */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 2. 正文 ---------- */
+.post-content {
+  font-size: 17px;
+  line-height: 1.85;
+  overflow-wrap: break-word; /* 防止超长链接撑破布局 */
+}
+
+.post-content p {
+  margin: 1.15em 0;
+}
+
+/* ---------- 3. 标题 ---------- */
+.post-content h2 {
+  margin-top: 2.4em;
+  margin-bottom: 0.85em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.post-content h3 {
+  margin-top: 1.9em;
+  margin-bottom: 0.7em;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* 正文里的第一个标题不要顶出多余的空白 */
+.post-content > h2:first-child,
+.post-content > h3:first-child {
+  margin-top: 0;
+}
+
+/* ---------- 4. 代码 ---------- */
+.post-content code {
+  font-family: var(--font-code);
+  font-size: 0.88em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: var(--code-bg);
+}
+
+.post-content pre code {
+  font-size: 14px;
+  line-height: 1.65;
+  padding: 0;
+  background: none;
+}
+
+/* ---------- 5. 引用 ---------- */
+.post-content blockquote {
+  margin: 1.5em 0;
+  padding: 0.1em 0 0.1em 1.1em;
+  border-inline-start: 3px solid var(--primary);
+  color: var(--secondary);
+}
+
+/* ---------- 6. 图片 ---------- */
+.post-content img {
+  display: block;
+  margin: 1.7em auto;
+  border-radius: var(--radius);
+}
+
+/* 图片下方的斜体说明文字，居中显示更像图注 */
+.post-content img + em {
+  display: block;
+  margin-top: -1em;
+  text-align: center;
+  font-size: 0.9em;
+  color: var(--secondary);
+}
+
+/* ---------- 7. 表格 ---------- */
+.post-content table {
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.post-content table th {
+  font-weight: 600;
+}
+
+/* ---------- 8. 移动端 ---------- */
+@media screen and (max-width: 768px) {
+  .post-content {
+    font-size: 16.5px;
+    line-height: 1.8;
+  }
+}
+
+/* ============================================================
+   图片灯箱：点击正文里的图片可以全屏查看
+   （配套的 JS 在 layouts/partials/extend_footer.html 里）
+   ============================================================ */
+
+.post-content img {
+  cursor: zoom-in;
+}
+
+.img-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+  background: rgba(0, 0, 0, 0.86);
+  cursor: zoom-out;
+  animation: img-lightbox-in 0.18s ease-out;
+}
+
+.img-lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  border-radius: 6px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+}
+
+@keyframes img-lightbox-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 尊重系统的"减少动态效果"设置 */
+@media (prefers-reduced-motion: reduce) {
+  .img-lightbox {
+    animation: none;
+  }
+}

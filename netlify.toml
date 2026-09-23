@@ -1,0 +1,41 @@
+# ============================================================
+#  Netlify 构建配置
+#  Netlify 会读取本文件来构建你的站点
+# ============================================================
+
+[build]
+  # -b $URL 表示用 Netlify 分配给你的实际域名作为站点根地址，
+  # 这样以后绑定自定义域名时不用手动改 hugo.yaml
+  command = "hugo --gc --minify -b $URL"
+  publish = "public"
+
+[build.environment]
+  HUGO_VERSION = "0.166.0"
+  HUGO_ENV = "production"
+  HUGO_ENABLEGITINFO = "false"
+
+# 部署预览（Pull Request）用预览地址构建
+[context.deploy-preview]
+  command = "hugo --gc --minify -b $DEPLOY_PRIME_URL"
+
+# 非主分支的部署也用预览地址
+[context.branch-deploy]
+  command = "hugo --gc --minify -b $DEPLOY_PRIME_URL"
+
+# ------------------------------------------------------------
+#  安全响应头
+# ------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# 后台页面不要被 CDN 缓存，否则更新后可能看到旧版本
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    X-Robots-Tag = "noindex"

@@ -1,0 +1,26 @@
+{{- define "main" }}
+
+<article class="post-single">
+  <header class="post-header">
+    <h1 class="post-title entry-hint-parent">404 · 这个页面不存在</h1>
+  </header>
+
+  <div class="post-content md-content">
+    <p>你访问的地址没有对应的内容。可能是链接敲错了，也可能是这篇文章已经被我删掉或改名了。</p>
+
+    <p>可以试试从这里继续：</p>
+
+    <ul>
+      <li><a href="{{ "" | relURL }}">回到首页</a></li>
+      <li><a href="{{ "archives/" | relURL }}">翻翻文章归档</a></li>
+      <li><a href="{{ "tags/" | relURL }}">按标签找找</a></li>
+      <li><a href="{{ "search/" | relURL }}">搜索站内内容</a></li>
+    </ul>
+
+    <p style="color: var(--secondary); font-size: 0.9em; margin-top: 2.5em;">
+      如果你确定这个链接以前是能打开的，那大概率是我改了文章的标题或网址，抱歉。
+    </p>
+  </div>
+</article>
+
+{{- end }}{{/* end main */}}
