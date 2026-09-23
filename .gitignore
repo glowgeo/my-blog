@@ -17,6 +17,3 @@ desktop.ini
 .env
 .env.local
 
-# 这个文件需要 GitHub 的 workflow 权限才能通过 git 推送，
-# 所以由网页界面创建，本地不追踪。
-/.github/workflows/news.yml
