@@ -1,0 +1,46 @@
+name: 每日新闻更新
+
+# GitHub 的定时任务用 UTC 时间。
+# 23:00 UTC = 北京时间第二天早上 07:00
+on:
+  schedule:
+    - cron: "0 23 * * *"
+  # 也可以在 Actions 页面手动点一下立刻跑
+  workflow_dispatch:
+
+# 需要写权限才能把抓到的新闻提交回仓库
+permissions:
+  contents: write
+
+concurrency:
+  group: news-update
+  cancel-in-progress: false
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 准备 Node 环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 抓取新闻
+        run: node tools/fetch-news.mjs
+
+      - name: 有变化才提交
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- data/news.json; then
+            echo "新闻内容没有变化，跳过本次提交"
+            exit 0
+          fi
+
+          git add data/news.json
+          git commit -m "自动更新每日新闻 $(TZ=Asia/Shanghai date +%Y-%m-%d)"
+          git push
