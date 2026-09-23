@@ -581,3 +581,166 @@ body::after {
     transform: none;
   }
 }
+
+/* ============================================================
+   首页深度改造：hero + 两列卡片网格
+   ------------------------------------------------------------
+   用 :has() 判断「这个 main 里有 .home-info」，也就是只对首页生效，
+   不会影响文章页和列表页。老浏览器不支持 :has() 时自动退回单列，
+   不会坏掉。
+   ============================================================ */
+
+@media screen and (min-width: 900px) {
+  /* 首页用更宽的版心，否则两列太挤 */
+  .main:has(> .home-info) {
+    max-width: 1000px;
+  }
+
+  .main:has(> .home-info) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
+  }
+
+  /* 这几块横跨整行 */
+  .main:has(> .home-info) > .home-info,
+  .main:has(> .home-info) > .page-header,
+  .main:has(> .home-info) > .page-footer,
+  .main:has(> .home-info) > .post-content {
+    grid-column: 1 / -1;
+  }
+
+  /* 紧跟在欢迎区后面的第一篇文章 → 做成大卡片横跨整行 */
+  .main:has(> .home-info) > .home-info + .post-entry {
+    grid-column: 1 / -1;
+    padding: 28px 30px;
+  }
+
+  .main:has(> .home-info) > .home-info + .post-entry .entry-header h2 {
+    font-size: 26px;
+  }
+
+  .main:has(> .home-info) > .home-info + .post-entry .entry-content {
+    font-size: 16px;
+  }
+
+  /* 网格里的普通卡片要等高一点，不然参差不齐 */
+  .main:has(> .home-info) > .post-entry {
+    margin-bottom: 0;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main:has(> .home-info) > .post-entry .entry-footer {
+    margin-top: auto;
+  }
+}
+
+/* ---------- 首页欢迎区：再放大一点，做成真正的 hero ---------- */
+@media screen and (min-width: 900px) {
+  .main:has(> .home-info) > .home-info {
+    padding: 46px 42px;
+  }
+
+  .main:has(> .home-info) > .home-info .entry-header h1 {
+    font-size: 38px;
+  }
+
+  .main:has(> .home-info) > .home-info .entry-content {
+    max-width: 620px;
+    font-size: 17px;
+  }
+}
+
+/* ---------- 入场动画：卡片依次浮现 ---------- */
+@keyframes entry-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.post-entry,
+.home-info {
+  animation: entry-rise 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
+
+/* 依次延迟，形成「涟漪」感 */
+.post-entry:nth-of-type(2) {
+  animation-delay: 0.04s;
+}
+.post-entry:nth-of-type(3) {
+  animation-delay: 0.08s;
+}
+.post-entry:nth-of-type(4) {
+  animation-delay: 0.12s;
+}
+.post-entry:nth-of-type(5) {
+  animation-delay: 0.16s;
+}
+.post-entry:nth-of-type(6) {
+  animation-delay: 0.2s;
+}
+.post-entry:nth-of-type(n + 7) {
+  animation-delay: 0.24s;
+}
+
+/* 鼠标悬停时标题左侧滑出一根强调色竖条 */
+.post-entry {
+  overflow: hidden;
+}
+
+.post-entry::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 0.22s ease;
+}
+
+.post-entry:hover::before {
+  transform: scaleY(1);
+}
+
+/* 页脚也稍微收一收 */
+.footer {
+  margin-top: 40px;
+  color: var(--secondary);
+  font-size: 13px;
+}
+
+.footer a {
+  color: var(--secondary);
+}
+
+.footer a:hover {
+  color: var(--accent);
+}
+
+/* ---------- 移动端：单列，卡片紧凑 ---------- */
+@media screen and (max-width: 899px) {
+  .post-entry {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-entry,
+  .home-info {
+    animation: none;
+  }
+  .post-entry::before {
+    transition: none;
+  }
+}

@@ -298,82 +298,145 @@
 }
 
 /* ============================================================
-   记忆翻牌
+   羊了个羊
    ============================================================ */
-.memory-wrap {
+.sheep {
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   margin: 0 auto;
 }
 
-.memory {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-.memory__card {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  aspect-ratio: 1;
-  cursor: pointer;
-  perspective: 700px;
-}
-
-.memory__inner {
+.sheep__board {
   position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.38s cubic-bezier(0.4, 0.2, 0.2, 1);
+  margin: 0 auto 16px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.memory__card.is-flipped .memory__inner,
-.memory__card.is-matched .memory__inner {
-  transform: rotateY(180deg);
-}
-
-.memory__face {
+.sheep__tile {
   position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  font-size: clamp(22px, 7vw, 34px);
-  line-height: 1;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.memory__face--back {
-  background: #4f46e5;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.memory__face--front {
-  background: var(--entry);
   border: 1px solid var(--border);
-  transform: rotateY(180deg);
+  border-radius: 8px;
+  background: var(--entry);
+  box-shadow: var(--shadow-sm);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease;
 }
 
-.memory__card.is-matched {
-  cursor: default;
+.sheep__tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  z-index: 9999 !important;
 }
 
-.memory__card.is-matched .memory__face--front {
-  border-color: #22c55e;
-  box-shadow: inset 0 0 0 2px rgba(34, 197, 94, 0.35);
+/* 被上层压住的牌：压暗 + 不可点 */
+.sheep__tile.is-covered {
+  cursor: not-allowed;
+  filter: brightness(0.62) saturate(0.7);
+}
+
+.sheep__tile.is-covered:hover {
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 被收走 / 已消除 */
+.sheep__tile.is-gone {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.4);
+}
+
+.sheep__slots {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius, 14px);
+  background: var(--code-bg);
+}
+
+.sheep__slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.sheep__slot.is-filled {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--entry);
+  animation: slot-in 0.2s ease-out;
+}
+
+@keyframes slot-in {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.sheep__props {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sheep__props .game__btn {
+  margin-left: 0;
+}
+
+.game__btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   合成大西瓜
+   ============================================================ */
+.suika {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.suika canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  touch-action: none;
 }
 
 @media screen and (max-width: 500px) {
-  .memory {
-    gap: 7px;
+  .sheep__slots {
+    gap: 3px;
+    padding: 6px;
+  }
+  .sheep__slot {
+    font-size: 18px;
   }
 }
 
@@ -381,10 +444,14 @@
 @media (prefers-reduced-motion: reduce) {
   .game.is-active,
   .game__over,
-  .g2048__tile {
+  .g2048__tile,
+  .sheep__slot.is-filled {
     animation: none;
   }
-  .memory__inner {
+  .sheep__tile {
     transition: none;
+  }
+  .sheep__tile:hover {
+    transform: none;
   }
 }

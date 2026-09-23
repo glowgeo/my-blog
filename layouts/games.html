@@ -8,20 +8,68 @@
 
   <div class="post-content md-content">
     <p>
-      三个纯前端的小游戏。<strong>不需要联网、不需要登录、不会上传任何数据</strong>——
+      四个纯前端的小游戏。<strong>不需要联网、不需要登录、不会上传任何数据</strong>——
       最高分只存在你自己的浏览器里。手机和电脑都能玩。
     </p>
   </div>
 
   <div class="games">
     <nav class="games__tabs" role="tablist">
-      <button type="button" class="games__tab is-active" data-game="g2048" role="tab">2048</button>
+      <button type="button" class="games__tab is-active" data-game="sheep" role="tab">羊了个羊</button>
+      <button type="button" class="games__tab" data-game="suika" role="tab">合成大西瓜</button>
+      <button type="button" class="games__tab" data-game="g2048" role="tab">2048</button>
       <button type="button" class="games__tab" data-game="snake" role="tab">贪吃蛇</button>
-      <button type="button" class="games__tab" data-game="memory" role="tab">记忆翻牌</button>
     </nav>
 
+    {{/* ===================== 羊了个羊 ===================== */}}
+    <section class="game is-active" id="game-sheep" role="tabpanel">
+      <div class="game__bar">
+        <div class="game__score">剩余 <b id="sheep-left">0</b></div>
+        <div class="game__score">最高 <b id="sheep-best">0</b></div>
+        <button type="button" class="game__btn" id="sheep-new">重新开始</button>
+      </div>
+
+      <div class="sheep">
+        <div class="sheep__board" id="sheep-board"></div>
+        <div class="sheep__slots" id="sheep-slots"></div>
+
+        <div class="game__over" id="sheep-over" hidden>
+          <p class="game__over-title" id="sheep-over-title">游戏结束</p>
+          <p class="game__over-sub" id="sheep-over-sub">槽位满了</p>
+          <button type="button" class="game__btn game__btn--primary" id="sheep-again">再来一局</button>
+        </div>
+      </div>
+
+      <div class="sheep__props">
+        <button type="button" class="game__btn" id="sheep-shuffle">🔀 洗牌（剩 1 次）</button>
+        <button type="button" class="game__btn" id="sheep-undo">↩️ 撤销（剩 1 次）</button>
+      </div>
+
+      <p class="game__hint">点没被压住的牌 → 收进下方槽位 → 三张相同自动消除。槽位满 7 个就输了。</p>
+    </section>
+
+    {{/* ===================== 合成大西瓜 ===================== */}}
+    <section class="game" id="game-suika" role="tabpanel">
+      <div class="game__bar">
+        <div class="game__score">得分 <b id="suika-score">0</b></div>
+        <div class="game__score">最高 <b id="suika-best">0</b></div>
+        <button type="button" class="game__btn" id="suika-new">重新开始</button>
+      </div>
+
+      <div class="suika">
+        <canvas id="suika-canvas" width="360" height="480" aria-label="合成大西瓜游戏画面"></canvas>
+        <div class="game__over" id="suika-over" hidden>
+          <p class="game__over-title">游戏结束</p>
+          <p class="game__over-sub">得分 <b id="suika-final">0</b></p>
+          <button type="button" class="game__btn game__btn--primary" id="suika-again">再来一局</button>
+        </div>
+      </div>
+
+      <p class="game__hint">电脑：移动鼠标选位置，点击投放　·　手机：在画面上滑动，松手投放。相同水果碰到一起会合成更大的。</p>
+    </section>
+
     {{/* ===================== 2048 ===================== */}}
-    <section class="game is-active" id="game-g2048" role="tabpanel">
+    <section class="game" id="game-g2048" role="tabpanel">
       <div class="game__bar">
         <div class="game__score">得分 <b id="g2048-score">0</b></div>
         <div class="game__score">最高 <b id="g2048-best">0</b></div>
@@ -58,26 +106,6 @@
       </div>
 
       <p class="game__hint">电脑：方向键 或 WASD，空格暂停　·　手机：在画面上滑动</p>
-    </section>
-
-    {{/* ===================== 记忆翻牌 ===================== */}}
-    <section class="game" id="game-memory" role="tabpanel">
-      <div class="game__bar">
-        <div class="game__score">步数 <b id="memory-moves">0</b></div>
-        <div class="game__score">最佳 <b id="memory-best">—</b></div>
-        <button type="button" class="game__btn" id="memory-new">重新开始</button>
-      </div>
-
-      <div class="memory-wrap">
-        <div class="memory" id="memory-board"></div>
-        <div class="game__over" id="memory-over" hidden>
-          <p class="game__over-title">全部找到！</p>
-          <p class="game__over-sub">用了 <b id="memory-final">0</b> 步</p>
-          <button type="button" class="game__btn game__btn--primary" id="memory-again">再来一局</button>
-        </div>
-      </div>
-
-      <p class="game__hint">点卡片翻开，找出 8 组相同的图案。步数越少越好。</p>
     </section>
   </div>
 
