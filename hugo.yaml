@@ -48,6 +48,11 @@ params:
 
   mainSections: ["posts"] # 部分版本读这里，两处都写更保险
 
+  # 左上角的站点标识
+  label:
+    text: "小林的博客"
+    icon: "favicon-32x32.png"
+
   DateFormat: "2006-01-02"
   defaultTheme: auto # auto / light / dark
   disableThemeToggle: false
@@ -113,26 +118,32 @@ menu:
   main:
     - identifier: news
       name: 要闻
+      pre: "📰"
       url: /news/
       weight: 5
     - identifier: posts
       name: 文章
+      pre: "✍️"
       url: /posts/
       weight: 10
     - identifier: archives
       name: 归档
+      pre: "🗂️"
       url: /archives/
       weight: 20
     - identifier: tags
       name: 标签
+      pre: "🏷️"
       url: /tags/
       weight: 30
     - identifier: games
       name: 小游戏
+      pre: "🎮"
       url: /games/
       weight: 40
     - identifier: search
       name: 搜索
+      pre: "🔍"
       url: /search/
       weight: 50
 
