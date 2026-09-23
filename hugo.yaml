@@ -4,7 +4,7 @@
 # ============================================================
 
 baseURL: "https://example.com/"
-title: "我的博客"
+title: "小林的博客"
 theme: "PaperMod"
 
 locale: "zh-CN" # Hugo 0.158+ 用 locale 取代了 languageCode
@@ -41,10 +41,10 @@ outputs:
 # ------------------------------------------------------------
 params:
   env: production
-  title: "我的博客"
-  description: "记录我的思考、笔记与生活"
-  keywords: ["博客", "随笔", "笔记"]
-  author: "你的名字"
+  title: "小林的博客"
+  description: "小林的个人博客，记录想法、笔记和踩过的坑"
+  keywords: ["小林", "博客", "随笔", "笔记"]
+  author: "小林"
 
   mainSections: ["posts"] # 部分版本读这里，两处都写更保险
 
@@ -69,10 +69,11 @@ params:
   comments: false # ← 想开评论改成 true，并填好下面 giscus
 
   homeInfoParams:
-    Title: "你好，欢迎来坐坐 👋"
+    Title: "你好，我是小林 👋"
     Content: >
-      这里是我的个人博客。
+      这是我的个人博客。
       我会在这里记录一些想法、笔记和踩过的坑。
+      偶尔也会写点小游戏放在这里玩。
 
   profileMode:
     enabled: false
@@ -122,10 +123,14 @@ menu:
       name: 标签
       url: /tags/
       weight: 30
+    - identifier: games
+      name: 小游戏
+      url: /games/
+      weight: 40
     - identifier: search
       name: 搜索
       url: /search/
-      weight: 40
+      weight: 50
 
 # ------------------------------------------------------------
 #  正文渲染

@@ -1,0 +1,89 @@
+{{- define "main" }}
+
+<article class="post-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title entry-hint-parent">{{ .Title }}</h1>
+  </header>
+
+  <div class="post-content md-content">
+    <p>
+      三个纯前端的小游戏。<strong>不需要联网、不需要登录、不会上传任何数据</strong>——
+      最高分只存在你自己的浏览器里。手机和电脑都能玩。
+    </p>
+  </div>
+
+  <div class="games">
+    <nav class="games__tabs" role="tablist">
+      <button type="button" class="games__tab is-active" data-game="g2048" role="tab">2048</button>
+      <button type="button" class="games__tab" data-game="snake" role="tab">贪吃蛇</button>
+      <button type="button" class="games__tab" data-game="memory" role="tab">记忆翻牌</button>
+    </nav>
+
+    {{/* ===================== 2048 ===================== */}}
+    <section class="game is-active" id="game-g2048" role="tabpanel">
+      <div class="game__bar">
+        <div class="game__score">得分 <b id="g2048-score">0</b></div>
+        <div class="game__score">最高 <b id="g2048-best">0</b></div>
+        <button type="button" class="game__btn" id="g2048-new">重新开始</button>
+      </div>
+
+      <div class="g2048">
+        <div class="g2048__grid" id="g2048-board"></div>
+        <div class="game__over" id="g2048-over" hidden>
+          <p class="game__over-title">游戏结束</p>
+          <p class="game__over-sub">得分 <b id="g2048-final">0</b></p>
+          <button type="button" class="game__btn game__btn--primary" id="g2048-again">再来一局</button>
+        </div>
+      </div>
+
+      <p class="game__hint">电脑：方向键 或 WASD　·　手机：在棋盘上滑动</p>
+    </section>
+
+    {{/* ===================== 贪吃蛇 ===================== */}}
+    <section class="game" id="game-snake" role="tabpanel">
+      <div class="game__bar">
+        <div class="game__score">得分 <b id="snake-score">0</b></div>
+        <div class="game__score">最高 <b id="snake-best">0</b></div>
+        <button type="button" class="game__btn" id="snake-new">重新开始</button>
+      </div>
+
+      <div class="snake">
+        <canvas id="snake-canvas" width="400" height="400" aria-label="贪吃蛇游戏画面"></canvas>
+        <div class="game__over" id="snake-over" hidden>
+          <p class="game__over-title" id="snake-over-title">游戏结束</p>
+          <p class="game__over-sub">得分 <b id="snake-final">0</b></p>
+          <button type="button" class="game__btn game__btn--primary" id="snake-again">再来一局</button>
+        </div>
+      </div>
+
+      <p class="game__hint">电脑：方向键 或 WASD，空格暂停　·　手机：在画面上滑动</p>
+    </section>
+
+    {{/* ===================== 记忆翻牌 ===================== */}}
+    <section class="game" id="game-memory" role="tabpanel">
+      <div class="game__bar">
+        <div class="game__score">步数 <b id="memory-moves">0</b></div>
+        <div class="game__score">最佳 <b id="memory-best">—</b></div>
+        <button type="button" class="game__btn" id="memory-new">重新开始</button>
+      </div>
+
+      <div class="memory-wrap">
+        <div class="memory" id="memory-board"></div>
+        <div class="game__over" id="memory-over" hidden>
+          <p class="game__over-title">全部找到！</p>
+          <p class="game__over-sub">用了 <b id="memory-final">0</b> 步</p>
+          <button type="button" class="game__btn game__btn--primary" id="memory-again">再来一局</button>
+        </div>
+      </div>
+
+      <p class="game__hint">点卡片翻开，找出 8 组相同的图案。步数越少越好。</p>
+    </section>
+  </div>
+
+  <footer class="post-footer"></footer>
+</article>
+
+<script src="{{ "js/games.js" | relURL }}" defer></script>
+
+{{- end }}{{/* end main */}}
