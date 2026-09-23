@@ -18,5 +18,5 @@ summary: "关于我和这个博客"
 
 ## 联系我
 
-- GitHub：[glwogeo](https://github.com/glwogeo)
+- GitHub：[glowgeo](https://github.com/glowgeo)
 - 小游戏：[来玩两把](/games/)

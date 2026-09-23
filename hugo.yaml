@@ -84,7 +84,7 @@ params:
   # 社交图标：不需要的整段删掉
   socialIcons:
     - name: github
-      url: "https://github.com/glwogeo"
+      url: "https://github.com/glowgeo"
     - name: rss
       url: "index.xml"
 
