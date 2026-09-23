@@ -192,8 +192,15 @@ async function fetchPage() {
       });
       if (!res.ok) throw new Error(`源站返回 HTTP ${res.status}`);
       const html = await res.text();
-      /* 被 WAF 拦了通常会返回一个很短的页面，用长度兜一下 */
+
+      /* 源站有风控：请求太频繁会被丢一个腾讯验证码页面过来。
+         这里明确识别出来，免得把验证码页当成正常页面去解析。 */
+      if (/TCaptcha|captcha\.qq\.com|__captcha/i.test(html)) {
+        throw new Error("被源站风控拦了（要求人机验证），稍后会自动重试");
+      }
+      /* 被拦时也可能返回一个很短的页面，用长度再兜一层 */
       if (html.length < 5000) throw new Error("返回内容过短，可能被拦截");
+
       return html;
     } catch (err) {
       lastErr = err;
