@@ -16,7 +16,8 @@
 
 const SOURCE_URL = "https://www.smzdm.com/jingxuan/";
 const CACHE_SECONDS = 600; // 10 分钟
-const FETCH_TIMEOUT = 12000;
+const FETCH_TIMEOUT = 9000; // 单次尝试上限（函数本身有 10 秒硬上限）
+const FETCH_ATTEMPTS = 2; // 冷启动/抖动时再试一次
 
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
@@ -171,22 +172,39 @@ function parseDeals(html) {
 /* ---------- HTTP 处理 ---------- */
 
 async function fetchPage() {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT);
-  try {
-    const res = await fetch(SOURCE_URL, {
-      signal: ctrl.signal,
-      headers: {
-        "User-Agent": UA,
-        Accept: "text/html,application/xhtml+xml",
-        "Accept-Language": "zh-CN,zh;q=0.9",
-      },
-    });
-    if (!res.ok) throw new Error(`源站返回 HTTP ${res.status}`);
-    return await res.text();
-  } finally {
-    clearTimeout(timer);
+  let lastErr = new Error("未知错误");
+
+  for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT);
+    try {
+      const res = await fetch(SOURCE_URL, {
+        signal: ctrl.signal,
+        headers: {
+          "User-Agent": UA,
+          Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+          "Accept-Encoding": "gzip, deflate, br",
+          Referer: "https://www.smzdm.com/",
+          "Upgrade-Insecure-Requests": "1",
+          "Cache-Control": "no-cache",
+        },
+      });
+      if (!res.ok) throw new Error(`源站返回 HTTP ${res.status}`);
+      const html = await res.text();
+      /* 被 WAF 拦了通常会返回一个很短的页面，用长度兜一下 */
+      if (html.length < 5000) throw new Error("返回内容过短，可能被拦截");
+      return html;
+    } catch (err) {
+      lastErr = err;
+      /* 还有下一次机会的话，稍微等一下再试 */
+      if (attempt < FETCH_ATTEMPTS) await new Promise((r) => setTimeout(r, 300));
+    } finally {
+      clearTimeout(timer);
+    }
   }
+
+  throw lastErr;
 }
 
 function nowLabel() {
