@@ -1,0 +1,394 @@
+/* ============================================================
+   薅羊毛页面
+   ============================================================ */
+
+.deals {
+  margin-top: 8px;
+}
+
+/* ---------- 顶部工具条 ---------- */
+.deals__bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  background: var(--entry);
+}
+
+.deals__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--secondary);
+  font-size: 13px;
+}
+
+.deals__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--secondary);
+}
+
+.deals__dot.is-ok {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+}
+
+.deals__dot.is-loading {
+  background: var(--accent);
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+
+.deals__dot.is-warn {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
+.deals__dot.is-err {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
+@keyframes dot-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.deals__filters {
+  display: flex;
+  gap: 3px;
+  margin-left: auto;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--code-bg);
+}
+
+.deals__filter {
+  padding: 6px 13px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--secondary);
+  font-family: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, transform 0.12s ease;
+}
+
+.deals__filter:hover {
+  color: var(--accent);
+}
+
+.deals__filter:active {
+  transform: scale(0.95);
+}
+
+.deals__filter.is-active {
+  background: var(--theme);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.deals__refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--theme);
+  color: var(--secondary);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, transform 0.12s ease;
+}
+
+.deals__refresh:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.deals__refresh:active {
+  transform: scale(0.95);
+}
+
+/* ---------- 列表 ---------- */
+.deals__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media screen and (max-width: 899px) {
+  .deals__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- 单张卡片 ---------- */
+.deal {
+  position: relative;
+  display: flex;
+  gap: 13px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  background: var(--entry);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.deal:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+
+/* 绝对值：左边一条金红色的边 */
+.deal--absolute {
+  border-color: color-mix(in srgb, #f97316 45%, var(--border));
+}
+
+.deal--absolute::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #f97316, #ef4444);
+}
+
+.deal__thumb {
+  flex-shrink: 0;
+  display: block;
+  width: 104px;
+  height: 104px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--code-bg);
+}
+
+.deal__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.deal:hover .deal__thumb img {
+  transform: scale(1.06);
+}
+
+.deal__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+/* ---------- 徽章 ---------- */
+.deal__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.deal__badge {
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.deal__badge--top {
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  color: #fff;
+}
+
+/* ---------- 标题 ---------- */
+.deal__title {
+  margin: 0 0 7px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.deal__title a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+
+.deal__title a:hover {
+  color: var(--accent);
+}
+
+/* ---------- 价格 ---------- */
+.deal__pricerow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.deal__price {
+  color: #ef4444;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+:root[data-theme="dark"] .deal__price {
+  color: #f87171;
+}
+
+.deal__mall {
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--code-bg);
+  color: var(--secondary);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* ---------- 描述 / 元信息 ---------- */
+.deal__desc {
+  margin: 0 0 8px;
+  color: var(--secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.deal__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  color: var(--secondary);
+  font-size: 11.5px;
+}
+
+.deal__tag {
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  line-height: 1.7;
+}
+
+.deal__time {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- 骨架屏 / 空状态 ---------- */
+.deals__skeleton {
+  display: contents;
+}
+
+.deals__skeleton-card {
+  height: 132px;
+  border-radius: var(--card-radius);
+  background: linear-gradient(
+    100deg,
+    var(--code-bg) 30%,
+    color-mix(in srgb, var(--code-bg) 60%, var(--border)) 50%,
+    var(--code-bg) 70%
+  );
+  background-size: 220% 100%;
+  animation: skeleton-slide 1.3s ease-in-out infinite;
+}
+
+@keyframes skeleton-slide {
+  from {
+    background-position: 140% 0;
+  }
+  to {
+    background-position: -40% 0;
+  }
+}
+
+.deals__empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 34px 20px;
+  border: 1px dashed var(--border);
+  border-radius: var(--card-radius);
+  color: var(--secondary);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ---------- 底部说明 ---------- */
+.deals__note {
+  margin: 20px 0 0;
+  padding: 14px 16px;
+  border-radius: var(--card-radius);
+  background: var(--code-bg);
+  color: var(--secondary);
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+
+.deals__note a {
+  color: var(--accent);
+}
+
+@media screen and (max-width: 620px) {
+  .deals__bar {
+    gap: 10px;
+  }
+
+  .deals__filters {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+  }
+
+  .deals__refresh {
+    margin-left: auto;
+  }
+
+  .deal__thumb {
+    width: 84px;
+    height: 84px;
+  }
+
+  .deal__price {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deal,
+  .deal__thumb img,
+  .deals__dot {
+    transition: none;
+    animation: none;
+  }
+  .deal:hover {
+    transform: none;
+  }
+  .deals__skeleton-card {
+    animation: none;
+  }
+}

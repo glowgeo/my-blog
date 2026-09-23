@@ -141,6 +141,11 @@ menu:
       pre: "🎮"
       url: /games/
       weight: 40
+    - identifier: deals
+      name: 薅羊毛
+      pre: "🛒"
+      url: /deals/
+      weight: 45
     - identifier: search
       name: 搜索
       pre: "🔍"

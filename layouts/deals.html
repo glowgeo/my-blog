@@ -1,0 +1,60 @@
+{{- define "main" }}
+
+<article class="post-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title entry-hint-parent">{{ .Title }}</h1>
+  </header>
+
+  <div class="post-content md-content">
+    <p>
+      实时汇总的好价，<strong>数据全部来自「什么值得买」的精选好价</strong>，
+      带「⭐ 绝对值」标记的是他们官方评出的高性价比商品。
+      每 <strong>10 分钟</strong>自动拉取一次，点卡片跳转到原文看完整爆料。
+    </p>
+  </div>
+
+  <div class="deals" id="deals-app" data-endpoint="/.netlify/functions/deals" data-interval="600">
+    <div class="deals__bar">
+      <div class="deals__status" id="deals-status">
+        <span class="deals__dot"></span><span id="deals-status-text">正在加载好价…</span>
+      </div>
+
+      <div class="deals__filters" id="deals-filters">
+        <button type="button" class="deals__filter is-active" data-filter="all">全部</button>
+        <button type="button" class="deals__filter" data-filter="absolute">⭐ 绝对值</button>
+        <button type="button" class="deals__filter" data-filter="low">历史低价</button>
+        <button type="button" class="deals__filter" data-filter="coupon">需用券</button>
+      </div>
+
+      <button type="button" class="deals__refresh" id="deals-refresh" title="立即刷新">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 1 1-2.64-6.36"></path><path d="M21 3v6h-6"></path>
+        </svg>
+        <span>刷新</span>
+      </button>
+    </div>
+
+    <div class="deals__list" id="deals-list">
+      <div class="deals__skeleton">
+        <div class="deals__skeleton-card"></div>
+        <div class="deals__skeleton-card"></div>
+        <div class="deals__skeleton-card"></div>
+        <div class="deals__skeleton-card"></div>
+      </div>
+    </div>
+
+    <p class="deals__note">
+      <strong>数据来源</strong>：<a href="https://www.smzdm.com/jingxuan/" target="_blank" rel="noopener noreferrer">什么值得买 · 精选好价</a>，
+      本站只做聚合展示，<strong>不参与任何交易、不含推广链接</strong>。
+      价格和库存随时会变，下单前请以商家页面为准。
+    </p>
+  </div>
+
+  <footer class="post-footer"></footer>
+</article>
+
+<script src="{{ "js/deals.js" | relURL }}" defer></script>
+
+{{- end }}{{/* end main */}}

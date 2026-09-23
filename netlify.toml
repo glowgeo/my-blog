@@ -9,6 +9,21 @@
   command = "hugo --gc --minify -b $URL"
   publish = "public"
 
+# ------------------------------------------------------------
+#  Serverless 函数
+#  「薅羊毛」页面的好价数据就是靠 netlify/functions/deals.js 抓的，
+#  服务端执行所以没有浏览器跨域问题
+# ------------------------------------------------------------
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# 函数响应带 10 分钟缓存，这里再声明一次，避免被 CDN 规则覆盖
+[[headers]]
+  for = "/.netlify/functions/deals"
+  [headers.values]
+    Cache-Control = "public, max-age=600"
+
 [build.environment]
   HUGO_VERSION = "0.166.0"
   HUGO_ENV = "production"
