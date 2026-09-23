@@ -1,0 +1,48 @@
+{{- define "main" }}
+{{- $news := site.Data.news }}
+
+<article class="post-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title entry-hint-parent">{{ .Title }}</h1>
+  </header>
+
+  <div class="post-content md-content">
+    <p>
+      每天早上自动汇总一次的国内要闻。这里<strong>只保留标题、时间和一句摘要</strong>，
+      点标题直接跳转到原媒体网站看全文——不转载、不改写、不夹带广告稿件。
+    </p>
+    {{- if $news.updated }}
+    <p class="news__updated">最近更新：{{ $news.updated }}</p>
+    {{- else }}
+    <p class="news__updated">还没有数据，等第一次自动抓取完成后就会出现。</p>
+    {{- end }}
+  </div>
+
+  {{- if $news }}
+  <div class="news">
+    {{- range $news.sections }}
+    <section class="news__section">
+      <h2 class="news__heading">
+        <span class="news__tag">{{ .name }}</span>
+        <a class="news__source" href="{{ .homepage }}" target="_blank" rel="noopener noreferrer">{{ .source }} ↗</a>
+      </h2>
+
+      <ol class="news__list">
+        {{- range .items }}
+        <li class="news__item">
+          <a class="news__title" href="{{ .link }}" target="_blank" rel="noopener noreferrer">{{ .title }}</a>
+          {{- if .time }}<time class="news__time">{{ .time }}</time>{{ end }}
+          {{- with .summary }}<p class="news__summary">{{ . }}</p>{{ end }}
+        </li>
+        {{- end }}
+      </ol>
+    </section>
+    {{- end }}
+  </div>
+  {{- end }}
+
+  <footer class="post-footer"></footer>
+</article>
+
+{{- end }}{{/* end main */}}

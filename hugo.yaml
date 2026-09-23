@@ -111,6 +111,10 @@ params:
 # ------------------------------------------------------------
 menu:
   main:
+    - identifier: news
+      name: 要闻
+      url: /news/
+      weight: 5
     - identifier: posts
       name: 文章
       url: /posts/

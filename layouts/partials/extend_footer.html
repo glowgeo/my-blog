@@ -66,3 +66,27 @@
   })();
 </script>
 {{- end }}
+
+{{- if .IsPage }}
+{{- /* 阅读进度条：页面顶部一条渐变细线，跟着滚动增长 */}}
+<script>
+  (function () {
+    if (document.getElementById("read-progress")) return;
+
+    var bar = document.createElement("div");
+    bar.id = "read-progress";
+    document.body.appendChild(bar);
+
+    function update() {
+      var doc = document.documentElement;
+      var total = doc.scrollHeight - doc.clientHeight;
+      var pct = total > 0 ? (doc.scrollTop / total) * 100 : 0;
+      bar.style.width = Math.min(100, Math.max(0, pct)) + "%";
+    }
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    update();
+  })();
+</script>
+{{- end }}

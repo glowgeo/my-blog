@@ -1,0 +1,402 @@
+/* ============================================================
+   整体视觉优化
+   ------------------------------------------------------------
+   PaperMod 会把 assets/css/extended/ 下的文件拼在核心样式「之后」，
+   所以这里的规则能直接覆盖主题默认样式。
+   ============================================================ */
+
+/* ---------- 设计变量 ---------- */
+:root {
+  --accent: #4f46e5;
+  --accent-2: #6366f1;
+  --accent-soft: rgba(79, 70, 229, 0.1);
+  --card-radius: 14px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 14px rgba(16, 24, 40, 0.08), 0 2px 4px rgba(16, 24, 40, 0.04);
+  --shadow-lg: 0 14px 34px rgba(16, 24, 40, 0.12), 0 4px 10px rgba(16, 24, 40, 0.05);
+}
+
+:root[data-theme="dark"] {
+  --accent: #818cf8;
+  --accent-2: #a5b4fc;
+  --accent-soft: rgba(129, 140, 248, 0.14);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.38);
+  --shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   顶栏：加一层毛玻璃，滚动时内容从底下透出来
+   ============================================================ */
+.header {
+  background: color-mix(in srgb, var(--theme) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo a {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+#menu a {
+  border-radius: 8px;
+  padding: 4px 10px;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+#menu a:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+#menu .active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* 主题切换按钮 */
+#theme-toggle:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ============================================================
+   首页欢迎区：做成一张渐变卡片
+   ============================================================ */
+.home-info {
+  position: relative;
+  overflow: hidden;
+  padding: 34px 30px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  background:
+    radial-gradient(120% 140% at 0% 0%, var(--accent-soft) 0%, transparent 62%),
+    var(--entry);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 右上角一个若有若无的光斑 */
+.home-info::after {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.home-info .entry-header h1 {
+  margin: 0 0 10px;
+  font-size: 30px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.home-info .entry-content {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--secondary);
+}
+
+.home-info .entry-footer {
+  margin-top: 18px;
+}
+
+.home-info .entry-footer a {
+  transition: transform 0.16s ease, color 0.16s ease;
+}
+
+.home-info .entry-footer a:hover {
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   文章列表：做成卡片，悬停轻微浮起
+   ============================================================ */
+.post-entry {
+  position: relative;
+  margin-bottom: 14px;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  background: var(--entry);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.post-entry:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+
+.post-entry:hover .entry-header h2 {
+  color: var(--accent);
+}
+
+.post-entry .entry-header h2 {
+  font-size: 21px;
+  line-height: 1.45;
+  transition: color 0.18s ease;
+}
+
+.post-entry .entry-content {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--secondary);
+}
+
+.post-entry .entry-footer {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--secondary);
+}
+
+/* 列表页标题 */
+.page-header h1 {
+  font-size: 28px;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   文章正文
+   ============================================================ */
+.post-title {
+  font-size: 32px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+/* 链接：用强调色 + 虚线下划线，悬停变实线 */
+.post-content a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.post-content a:hover {
+  border-bottom-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* 标签 */
+.post-tags a,
+.terms-tags a {
+  display: inline-block;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--entry);
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.16s ease;
+}
+
+.post-tags a:hover,
+.terms-tags a:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* 上一篇 / 下一篇 */
+.paginav {
+  border-radius: var(--card-radius);
+}
+
+.paginav a:hover {
+  background: var(--accent-soft);
+}
+
+/* ============================================================
+   阅读进度条（配套 JS 在 layouts/partials/extend_footer.html）
+   ============================================================ */
+#read-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9998;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.08s linear;
+  pointer-events: none;
+}
+
+/* ============================================================
+   每日要闻页
+   ============================================================ */
+.news__updated {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.news {
+  margin-top: 8px;
+}
+
+.news__section {
+  margin-bottom: 34px;
+}
+
+.news__heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+
+.news__tag {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+:root[data-theme="dark"] .news__tag {
+  color: #1a1a1f;
+}
+
+.news__source {
+  color: var(--secondary);
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.news__source:hover {
+  color: var(--accent);
+}
+
+.news__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: newsitem;
+}
+
+.news__item {
+  position: relative;
+  padding: 11px 0 11px 30px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.news__item:last-child {
+  border-bottom: 0;
+}
+
+/* 左侧序号 */
+.news__item::before {
+  counter-increment: newsitem;
+  content: counter(newsitem);
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--code-bg);
+  color: var(--secondary);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.news__title {
+  display: inline;
+  color: var(--primary);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+
+.news__title:hover {
+  color: var(--accent);
+}
+
+.news__time {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--code-bg);
+  color: var(--secondary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+.news__summary {
+  margin: 5px 0 0;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+@media screen and (max-width: 600px) {
+  .home-info {
+    padding: 26px 20px;
+  }
+  .home-info .entry-header h1 {
+    font-size: 25px;
+  }
+  .post-entry {
+    padding: 16px 16px;
+  }
+  .post-entry .entry-header h2 {
+    font-size: 18px;
+  }
+  .post-title {
+    font-size: 25px;
+  }
+  .news__item {
+    padding-left: 26px;
+  }
+  .news__title {
+    font-size: 15px;
+  }
+}
+
+/* 尊重系统的「减少动态效果」设置 */
+@media (prefers-reduced-motion: reduce) {
+  .post-entry,
+  .post-entry .entry-header h2,
+  .post-tags a,
+  .home-info .entry-footer a {
+    transition: none;
+  }
+  .post-entry:hover,
+  .post-tags a:hover {
+    transform: none;
+  }
+}
