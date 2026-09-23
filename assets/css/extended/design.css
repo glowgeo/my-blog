@@ -400,3 +400,184 @@
     transform: none;
   }
 }
+
+/* ============================================================
+   每日 60 秒
+   ============================================================ */
+.daily {
+  position: relative;
+  margin: 8px 0 36px;
+  padding: 22px 24px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: var(--card-radius);
+  background:
+    radial-gradient(130% 120% at 100% 0%, var(--accent-soft) 0%, transparent 58%),
+    var(--entry);
+  box-shadow: var(--shadow-sm);
+}
+
+.daily__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.daily__badge {
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.daily__date {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.daily__src {
+  margin-left: auto;
+  color: var(--secondary);
+  font-size: 12px;
+}
+
+.daily__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: dailyitem;
+}
+
+.daily__list li {
+  position: relative;
+  padding: 9px 0 9px 30px;
+  border-bottom: 1px dashed var(--border);
+  font-size: 15.5px;
+  line-height: 1.7;
+}
+
+.daily__list li:last-child {
+  border-bottom: 0;
+}
+
+.daily__list li::before {
+  counter-increment: dailyitem;
+  content: counter(dailyitem);
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+:root[data-theme="dark"] .daily__list li::before {
+  color: #1a1a1f;
+}
+
+.daily__image {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.daily__image summary {
+  color: var(--accent);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.daily__image summary:hover {
+  text-decoration: underline;
+}
+
+.daily__image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   每日自动更换的首页背景（图源 Bing 每日壁纸）
+   ------------------------------------------------------------
+   URL 由 layouts/partials/extend_footer.html 写进 --daily-bg，
+   这里只负责怎么显示。取不到图时自动退化为无背景。
+   ============================================================ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--daily-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.24;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* 顶部加一层柔和的渐变，保证标题和导航始终看得清 */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--theme) 92%, transparent) 0%,
+    color-mix(in srgb, var(--theme) 62%, transparent) 30%,
+    color-mix(in srgb, var(--theme) 78%, transparent) 100%
+  );
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] body::before {
+  opacity: 0.14;
+}
+
+/* ============================================================
+   点击反馈：按钮和卡片按下时轻微回弹
+   ============================================================ */
+.post-entry:active,
+.game__btn:active,
+.games__tab:active,
+.news__title:active,
+.post-tags a:active,
+.terms-tags a:active {
+  transform: scale(0.985);
+}
+
+/* 导航点击时的高亮反馈 */
+#menu a:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    transition: none;
+  }
+  .post-entry:active,
+  .game__btn:active,
+  .games__tab:active {
+    transform: none;
+  }
+}

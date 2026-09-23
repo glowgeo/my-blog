@@ -175,6 +175,78 @@ function filterItems(items, cfg) {
 }
 
 /* ============================================================
+   每日 60 秒（vikiboss/60s 的静态 CDN 数据源）
+   ------------------------------------------------------------
+   这个服务自己每天自动更新，仓库里已经有 630+ 天的历史。
+   我们只管取当天那份 JSON，取不到就退回到昨天、前天。
+   ============================================================ */
+const S60_MIRRORS = [
+  "https://cdn.jsdmirror.com/gh/vikiboss/60s-static-host@main/static",
+  "https://cdn.jsdelivr.net/gh/vikiboss/60s-static-host@main/static",
+];
+
+function bjDate(offsetDays = 0) {
+  const bj = new Date(Date.now() + 8 * 3600 * 1000 + offsetDays * 86400000);
+  return bj.toISOString().slice(0, 10);
+}
+
+async function fetch60s() {
+  for (const offset of [0, -1, -2]) {
+    const date = bjDate(offset);
+    for (const base of S60_MIRRORS) {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+        const res = await fetch(`${base}/60s/${date}.json`, {
+          signal: ctrl.signal,
+          headers: { Accept: "application/json" },
+        });
+        clearTimeout(timer);
+        if (!res.ok) continue;
+        const j = await res.json();
+        if (!Array.isArray(j.news) || !j.news.length) continue;
+        console.log(`✓ 每日 60 秒：取到 ${date} 的 ${j.news.length} 条`);
+        return {
+          date: j.date || date,
+          news: j.news,
+          // 图片直接引 CDN，不下载进仓库（否则一年能撑到上百 MB）
+          image: `${base}/images/${date}.png`,
+        };
+      } catch {
+        /* 换下一个镜像重试 */
+      }
+    }
+  }
+  console.warn("✗ 每日 60 秒：所有镜像都没取到，跳过");
+  return null;
+}
+
+/* ============================================================
+   Bing 每日壁纸（做首页动态背景）
+   ============================================================ */
+async function fetchBing() {
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    const res = await fetch(
+      "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN",
+      { signal: ctrl.signal, headers: { Accept: "application/json" } }
+    );
+    clearTimeout(timer);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const j = await res.json();
+    const img = j.images && j.images[0];
+    if (!img) throw new Error("返回结构异常");
+    const url = img.url.startsWith("http") ? img.url : "https://www.bing.com" + img.url;
+    console.log(`✓ Bing 每日壁纸：${img.copyright || "已取到"}`);
+    return { url, copyright: img.copyright || "" };
+  } catch (err) {
+    console.warn(`✗ Bing 每日壁纸取不到：${err.message}`);
+    return null;
+  }
+}
+
+/* ============================================================
    主流程
    ============================================================ */
 
@@ -243,6 +315,19 @@ async function main() {
   )}:${pad(bj.getMinutes())}`;
 
   const out = { updated: label, sections };
+
+  // 每日 60 秒 + 每日背景：取不到就沿用上一次的，绝不能覆盖成空
+  const [daily, bing] = await Promise.all([fetch60s(), fetchBing()]);
+  if (daily) out.daily = daily;
+  else if (old && old.daily) {
+    out.daily = old.daily;
+    console.warn("  → 沿用上一次的每日 60 秒数据");
+  }
+  if (bing) out.bing = bing;
+  else if (old && old.bing) {
+    out.bing = old.bing;
+    console.warn("  → 沿用上一次的壁纸");
+  }
 
   fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 2) + "\n", "utf8");

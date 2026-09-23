@@ -9,8 +9,8 @@
 
   <div class="post-content md-content">
     <p>
-      每天早上自动汇总一次的国内要闻。这里<strong>只保留标题、时间和一句摘要</strong>，
-      点标题直接跳转到原媒体网站看全文——不转载、不改写、不夹带广告稿件。
+      每天早上自动汇总一次。这里<strong>只保留标题和一句摘要</strong>，点标题跳转到原媒体网站看全文——
+      不转载、不改写、不夹带广告稿件。
     </p>
     {{- if $news.updated }}
     <p class="news__updated">最近更新：{{ $news.updated }}</p>
@@ -19,7 +19,34 @@
     {{- end }}
   </div>
 
-  {{- if $news }}
+  {{- /* ==================== 每日 60 秒（置顶） ==================== */}}
+  {{- with $news.daily }}
+  <section class="daily">
+    <header class="daily__head">
+      <span class="daily__badge">每日 60 秒</span>
+      <span class="daily__date">{{ .date }}</span>
+      <span class="daily__src">来源：60s API</span>
+    </header>
+
+    <ol class="daily__list">
+      {{- range .news }}
+      <li>{{ . }}</li>
+      {{- end }}
+    </ol>
+
+    {{- with .image }}
+    <details class="daily__image">
+      <summary>展开图片版日报</summary>
+      <a href="{{ . }}" target="_blank" rel="noopener noreferrer">
+        <img src="{{ . }}" alt="{{ $news.daily.date }} 每日 60 秒图片版" loading="lazy">
+      </a>
+    </details>
+    {{- end }}
+  </section>
+  {{- end }}
+
+  {{- /* ==================== RSS 分区 ==================== */}}
+  {{- if $news.sections }}
   <div class="news">
     {{- range $news.sections }}
     <section class="news__section">

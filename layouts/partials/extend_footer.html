@@ -1,12 +1,14 @@
 {{- /*
   这是 PaperMod 的扩展点，内容会插入到每个页面的 </body> 之前。
-  这个文件做两件事：
+  这个文件做四件事：
 
     1. 首页加载 Netlify Identity 组件
        —— 后台 /admin/ 的邀请邮件登录流程需要它
-    2. 文章页加载图片灯箱
-       —— 点击正文里的图片可以全屏查看，配套样式在
-          assets/css/extended/custom.css
+    2. 首页设置每日背景图
+       —— 图源是 Bing 每日壁纸，由 tools/fetch-news.mjs 每天写入 data/news.json
+    3. 文章页加载图片灯箱
+       —— 点击正文里的图片可以全屏查看
+    4. 文章页加载阅读进度条
 */ -}}
 
 {{- if .IsHome }}
@@ -22,6 +24,17 @@
     });
   }
 </script>
+
+{{- /* 每日背景：把 Bing 壁纸地址写成 CSS 变量，样式在 design.css 里 */}}
+{{- with site.Data.news.bing.url }}
+<script>
+  (function () {
+    var url = "{{ . }}";
+    if (!url) return;
+    document.body.style.setProperty("--daily-bg", "url('" + url + "')");
+  })();
+</script>
+{{- end }}
 {{- end }}
 
 {{- if .IsPage }}
