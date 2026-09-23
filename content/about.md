@@ -17,4 +17,4 @@ summary: "关于我和这个博客"
 ## 联系我
 
 - 邮箱：your@email.com
-- GitHub：[你的用户名](https://github.com/)
+- GitHub：[glwogeo](https://github.com/glwogeo)
