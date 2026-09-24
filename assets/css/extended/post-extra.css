@@ -1,0 +1,172 @@
+/* ============================================================
+   文章底部：分享按钮 + 相关文章
+   配合 layouts/partials/extend_post_content.html
+   ============================================================ */
+
+.post-extra {
+  margin-top: 44px;
+}
+
+/* ---------- 分享 ---------- */
+.share {
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  background: var(--entry);
+}
+
+.share__title {
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+  color: var(--secondary);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.share__btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.share__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 15px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--theme);
+  color: var(--primary);
+  font-family: inherit;
+  font-size: 13.5px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease,
+    transform 0.12s ease;
+}
+
+.share__btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.share__btn:active {
+  transform: scale(0.96);
+}
+
+.share__btn.is-done {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+}
+
+:root[data-theme="dark"] .share__btn.is-done {
+  color: #4ade80;
+}
+
+/* ---------- 相关文章 ---------- */
+.related {
+  margin-top: 26px;
+}
+
+.related__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 0 0 10px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.related__title::before {
+  content: "";
+  width: 3px;
+  height: 15px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+}
+
+.related__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.related__item {
+  margin: 0;
+}
+
+.related__link {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  background: var(--entry);
+  text-decoration: none;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.related__link:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+
+.related__headline {
+  color: var(--primary);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  transition: color 0.16s ease;
+}
+
+.related__link:hover .related__headline {
+  color: var(--accent);
+}
+
+.related__meta {
+  margin-top: auto;
+  color: var(--secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media screen and (max-width: 700px) {
+  .related__list {
+    grid-template-columns: 1fr;
+  }
+  .share {
+    padding: 16px 16px;
+  }
+  .share__btn {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share__btn,
+  .related__link,
+  .related__headline {
+    transition: none;
+  }
+  .share__btn:hover,
+  .related__link:hover {
+    transform: none;
+  }
+}

@@ -48,6 +48,10 @@ params:
 
   mainSections: ["posts"] # 部分版本读这里，两处都写更保险
 
+  # 分享到微信 / X / Telegram 时显示的预览图
+  # 由 tools/make-icons.mjs 生成；文章若设了 cover，会优先用 cover
+  images: ["/images/og-default.png"]
+
   # 左上角的站点标识
   label:
     text: "小林的博客"

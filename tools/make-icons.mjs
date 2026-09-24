@@ -175,6 +175,81 @@ function buildICO(entries) {
   return Buffer.concat([header, ...dirs, ...blobs]);
 }
 
+// ============ 社交分享卡片图（Open Graph，1200×630）============
+/* 分享到微信 / Twitter / Telegram 时显示的那张预览图。
+   注意：这个脚本不依赖任何字体库，没法把中文渲染进图片，
+   所以这里用品牌色 + 图标同一个母题做一张干净的品牌卡。 */
+
+const OG_W = 1200;
+const OG_H = 630;
+const OG_SS = 2; // 超采样倍数
+
+const OG_BARS = [
+  { x0: 380, x1: 820, y0: 202, y1: 264 },
+  { x0: 380, x1: 820, y0: 284, y1: 346 },
+  { x0: 380, x1: 700, y0: 366, y1: 428 },
+];
+
+function ogSample(px, py) {
+  // 角对角渐变：#6366F1 → #312E81
+  const t = (px / OG_W + py / OG_H) / 2;
+  let r = 99 + (49 - 99) * t;
+  let g = 102 + (46 - 102) * t;
+  let b = 241 + (129 - 241) * t;
+
+  // 中间一团柔光
+  const d = Math.hypot(px - OG_W / 2, py - OG_H / 2) / (OG_W * 0.55);
+  const glow = Math.pow(Math.max(0, 1 - d), 2) * 0.18;
+  r += (255 - r) * glow;
+  g += (255 - g) * glow;
+  b += (255 - b) * glow;
+
+  // 斜向细纹，增加质感
+  const stripe = ((px + py) % 96) / 96;
+  if (stripe < 0.09) {
+    const k = ((0.09 - stripe) / 0.09) * 0.05;
+    r += (255 - r) * k;
+    g += (255 - g) * k;
+    b += (255 - b) * k;
+  }
+
+  // 三根白色圆角条（和站点图标同一个母题）
+  for (const bar of OG_BARS) {
+    const rad = (bar.y1 - bar.y0) / 2;
+    if (inRoundRect(px, py, bar.x0, bar.y0, bar.x1, bar.y1, rad)) {
+      return [255, 255, 255];
+    }
+  }
+
+  return [r, g, b];
+}
+
+function renderOG() {
+  const out = Buffer.alloc(OG_W * OG_H * 4);
+  const n = OG_SS * OG_SS;
+  for (let y = 0; y < OG_H; y++) {
+    for (let x = 0; x < OG_W; x++) {
+      let ar = 0;
+      let ag = 0;
+      let ab = 0;
+      for (let sy = 0; sy < OG_SS; sy++) {
+        for (let sx = 0; sx < OG_SS; sx++) {
+          const c = ogSample(x + (sx + 0.5) / OG_SS, y + (sy + 0.5) / OG_SS);
+          ar += c[0];
+          ag += c[1];
+          ab += c[2];
+        }
+      }
+      const i = (y * OG_W + x) * 4;
+      out[i] = Math.round(ar / n);
+      out[i + 1] = Math.round(ag / n);
+      out[i + 2] = Math.round(ab / n);
+      out[i + 3] = 255;
+    }
+  }
+  return out;
+}
+
 // ============ 输出 ============
 
 const outDir = path.join(process.cwd(), "static");
@@ -211,4 +286,12 @@ for (const [name, data] of files) {
   fs.writeFileSync(p, data);
   console.log(`  ${name.padEnd(24)} ${String(data.length).padStart(7)} 字节`);
 }
-console.log("图标生成完毕 → static/");
+
+// 分享卡片图放到 static/images/ 下
+const imgDir = path.join(outDir, "images");
+fs.mkdirSync(imgDir, { recursive: true });
+const ogPng = encodePNG(OG_W, OG_H, renderOG());
+fs.writeFileSync(path.join(imgDir, "og-default.png"), ogPng);
+console.log(`  ${"images/og-default.png".padEnd(24)} ${String(ogPng.length).padStart(7)} 字节`);
+
+console.log("图标 + 分享图生成完毕 → static/");

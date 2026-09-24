@@ -1,0 +1,124 @@
+{{- /*
+  文章底部的「分享按钮 + 相关文章」
+  PaperMod 的 single.html 会调用这个 partial，位置在正文之后。
+*/ -}}
+
+{{- if .IsPage }}
+{{- $title := .Title }}
+{{- $page := . }}
+
+<div class="post-extra">
+
+  {{/* ==================== 分享 ==================== */}}
+  <section class="share">
+    <h2 class="share__title">觉得有用？分享出去</h2>
+    <div class="share__btns">
+      <button type="button" class="share__btn" id="share-copy">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+        <span class="share__label">复制链接</span>
+      </button>
+
+      <a class="share__btn" target="_blank" rel="noopener noreferrer"
+         href="https://service.weibo.com/share/share.php?{{ querify "url" .Permalink "title" $title | safeURL }}">
+        <span aria-hidden="true">🟠</span><span class="share__label">微博</span>
+      </a>
+
+      <a class="share__btn" target="_blank" rel="noopener noreferrer"
+         href="https://twitter.com/intent/tweet?{{ querify "url" .Permalink "text" $title | safeURL }}">
+        <span aria-hidden="true">𝕏</span><span class="share__label">X</span>
+      </a>
+
+      <a class="share__btn" target="_blank" rel="noopener noreferrer"
+         href="https://t.me/share/url?{{ querify "url" .Permalink "text" $title | safeURL }}">
+        <span aria-hidden="true">✈️</span><span class="share__label">Telegram</span>
+      </a>
+
+      <a class="share__btn" target="_blank" rel="noopener noreferrer"
+         href="https://news.ycombinator.com/submitlink?{{ querify "u" .Permalink "t" $title | safeURL }}">
+        <span aria-hidden="true">🟡</span><span class="share__label">Hacker News</span>
+      </a>
+    </div>
+  </section>
+
+  {{/* ==================== 相关文章 ==================== */}}
+  {{- $tags := .Params.tags | default slice }}
+  {{- $cats := .Params.categories | default slice }}
+  {{- $scored := slice }}
+
+  {{- range where site.RegularPages "Section" "posts" }}
+    {{- if ne .Permalink $page.Permalink }}
+      {{- $sharedTags := intersect (.Params.tags | default slice) $tags }}
+      {{- $sharedCats := intersect (.Params.categories | default slice) $cats }}
+      {{/* 相同标签权重 2，相同分类权重 1 */}}
+      {{- $score := add (mul (len $sharedTags) 2) (len $sharedCats) }}
+      {{- if gt $score 0 }}
+        {{- $scored = $scored | append (dict "p" . "s" $score) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- $related := first 4 (sort $scored "s" "desc") }}
+
+  {{- if $related }}
+  <section class="related">
+    <h2 class="related__title">相关文章</h2>
+    <ul class="related__list">
+      {{- range $related }}
+      {{- $p := .p }}
+      <li class="related__item">
+        <a class="related__link" href="{{ $p.Permalink }}">
+          <span class="related__headline">{{ $p.Title }}</span>
+          <span class="related__meta">
+            {{- $p.Date.Format "2006-01-02" }}
+            {{- with $p.Params.tags }} · {{ delimit (first 3 .) " / " }}{{ end }}
+          </span>
+        </a>
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+  {{- end }}
+
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById("share-copy");
+    if (!btn) return;
+    var label = btn.querySelector(".share__label");
+
+    function done() {
+      btn.classList.add("is-done");
+      label.textContent = "已复制！";
+      setTimeout(function () {
+        btn.classList.remove("is-done");
+        label.textContent = "复制链接";
+      }, 1800);
+    }
+
+    function fallbackCopy() {
+      var ta = document.createElement("textarea");
+      ta.value = location.href;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    btn.addEventListener("click", function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(location.href).then(done, fallbackCopy);
+      } else {
+        fallbackCopy();
+      }
+    });
+  })();
+</script>
+{{- end }}
